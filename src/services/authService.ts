@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { API_BASE_URL, API_ENDPOINTS } from '../constants/api';
+import { API_ENDPOINTS } from '../constants/api';
+import { apiClient } from './apiClient';
 
 export interface LoginCredentials {
   email: string;
@@ -31,14 +31,13 @@ class AuthService {
 
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
-      const response = await axios.post(`${API_BASE_URL}${API_ENDPOINTS.AUTH.LOGIN}`, credentials);
-      const authData: AuthResponse = response.data;
+      const authData: AuthResponse = await apiClient.post(API_ENDPOINTS.AUTH.LOGIN, credentials);
       
       this.setTokens(authData.token, authData.refreshToken);
       this.setUser(authData.user);
       
       return authData;
-    } catch (error) {
+    } catch {
       throw new Error('Login failed. Please check your credentials.');
     }
   }
@@ -47,9 +46,7 @@ class AuthService {
     try {
       const token = this.getToken();
       if (token) {
-        await axios.post(`${API_BASE_URL}${API_ENDPOINTS.AUTH.LOGOUT}`, {}, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        await apiClient.post(API_ENDPOINTS.AUTH.LOGOUT, {});
       }
     } catch (error) {
       console.error('Logout error:', error);
@@ -65,15 +62,15 @@ class AuthService {
         throw new Error('No refresh token available');
       }
 
-      const response = await axios.post(`${API_BASE_URL}${API_ENDPOINTS.AUTH.REFRESH}`, {
+      const response = await apiClient.post(API_ENDPOINTS.AUTH.REFRESH, {
         refreshToken
       });
 
-      const { token, refreshToken: newRefreshToken } = response.data;
+      const { token, refreshToken: newRefreshToken } = response;
       this.setTokens(token, newRefreshToken);
       
       return token;
-    } catch (error) {
+    } catch {
       this.clearAuth();
       throw new Error('Token refresh failed');
     }

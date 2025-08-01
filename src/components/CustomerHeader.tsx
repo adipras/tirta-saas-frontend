@@ -2,7 +2,7 @@ import { BellIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 import { useAppSelector, useAppDispatch } from '../hooks/redux';
 import { logoutAsync } from '../store/slices/authSlice';
 
-const Header = () => {
+const CustomerHeader = () => {
   const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
@@ -14,7 +14,7 @@ const Header = () => {
     <header className="bg-white shadow-sm border-b border-gray-200">
       <div className="flex items-center justify-between px-4 py-3">
         <div className="flex items-center">
-          <h2 className="text-lg font-semibold text-gray-900">Dashboard</h2>
+          <h2 className="text-lg font-semibold text-gray-900">Customer Portal</h2>
         </div>
         <div className="flex items-center space-x-4">
           <button className="p-1 rounded-full text-gray-400 hover:text-gray-500">
@@ -23,8 +23,8 @@ const Header = () => {
           <div className="relative group">
             <div className="flex items-center space-x-3 cursor-pointer">
               <div className="text-right">
-                <p className="text-sm font-medium text-gray-900">{user?.name || 'Admin User'}</p>
-                <p className="text-xs text-gray-500 capitalize">{user?.role || 'Administrator'}</p>
+                <p className="text-sm font-medium text-gray-900">{user?.name || 'Customer'}</p>
+                <p className="text-xs text-gray-500 capitalize">{user?.role}</p>
               </div>
               <UserCircleIcon className="h-8 w-8 text-gray-400" />
             </div>
@@ -49,4 +49,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default CustomerHeader;

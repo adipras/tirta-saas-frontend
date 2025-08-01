@@ -6,7 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { loginAsync } from '../../store/slices/authSlice';
-import { LoginCredentials } from '../../services/authService';
+import type { LoginCredentials } from '../../services/authService';
 
 const schema = yup.object({
   email: yup
