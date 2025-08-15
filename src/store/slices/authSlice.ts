@@ -9,6 +9,7 @@ export interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
+  currentRequestId: string | undefined;
 }
 
 const initialState: AuthState = {
@@ -17,12 +18,17 @@ const initialState: AuthState = {
   isAuthenticated: authService.isAuthenticated(),
   isLoading: false,
   error: null,
+  currentRequestId: undefined,
 };
 
 // Async thunks
 export const loginAsync = createAsyncThunk(
   'auth/login',
-  async (credentials: LoginCredentials, { rejectWithValue }) => {
+  async (credentials: LoginCredentials, { rejectWithValue, requestId, getState }) => {
+    const { currentRequestId } = (getState() as { auth: AuthState }).auth;
+    if (requestId !== currentRequestId) {
+      return rejectWithValue('Request cancelled');
+    }
     try {
       const response = await authService.login(credentials);
       return response;
@@ -64,23 +70,35 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       // Login
-      .addCase(loginAsync.pending, (state) => {
+      .addCase(loginAsync.pending, (state, action) => {
+        if (state.isLoading) {
+          return;
+        }
         state.isLoading = true;
         state.error = null;
+        state.currentRequestId = action.meta.requestId;
       })
       .addCase(loginAsync.fulfilled, (state, action) => {
+        if (action.meta.requestId !== state.currentRequestId) {
+          return;
+        }
         state.isLoading = false;
         state.user = action.payload.user;
         state.token = action.payload.token;
         state.isAuthenticated = true;
         state.error = null;
+        state.currentRequestId = undefined;
       })
       .addCase(loginAsync.rejected, (state, action) => {
+        if (action.meta.requestId !== state.currentRequestId) {
+          return;
+        }
         state.isLoading = false;
         state.error = action.payload as string;
         state.isAuthenticated = false;
         state.user = null;
         state.token = null;
+        state.currentRequestId = undefined;
       })
       // Logout
       .addCase(logoutAsync.pending, (state) => {

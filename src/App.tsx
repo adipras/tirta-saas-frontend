@@ -10,6 +10,7 @@ import CustomerDashboard from './pages/CustomerDashboard';
 import AdminLogin from './pages/auth/AdminLogin';
 import CustomerLogin from './pages/auth/CustomerLogin';
 import PrivateRoute from './components/PrivateRoute';
+import CustomerList from './pages/customers/CustomerList';
 
 function App() {
   return (
@@ -27,7 +28,10 @@ function App() {
               </PrivateRoute>
             }>
               <Route index element={<Dashboard />} />
-              <Route path="customers" element={<div>Customers Page</div>} />
+              <Route path="customers" element={<CustomerList />} />
+              <Route path="customers/new" element={<div>New Customer Form</div>} />
+              <Route path="customers/:id" element={<div>Customer Details</div>} />
+              <Route path="customers/:id/edit" element={<div>Edit Customer Form</div>} />
               <Route path="invoices" element={<div>Invoices Page</div>} />
               <Route path="payments" element={<div>Payments Page</div>} />
               <Route path="reports" element={<div>Reports Page</div>} />

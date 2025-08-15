@@ -34,6 +34,9 @@ const CustomerLogin = () => {
   });
 
   const onSubmit = async (data: LoginCredentials) => {
+    // Prevent double submission
+    if (isLoading) return;
+    
     try {
       await dispatch(loginAsync(data)).unwrap();
       navigate('/customer');

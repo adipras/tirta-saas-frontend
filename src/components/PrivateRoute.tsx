@@ -9,6 +9,8 @@ interface PrivateRouteProps {
 const PrivateRoute = ({ children, requiredRole }: PrivateRouteProps) => {
   const location = useLocation();
   const { isAuthenticated, user } = useAppSelector((state) => state.auth);
+  
+  console.log('PrivateRoute check:', { isAuthenticated, user, requiredRole });
 
   if (!isAuthenticated) {
     // Redirect to appropriate login page based on required role

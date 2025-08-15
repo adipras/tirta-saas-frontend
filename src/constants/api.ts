@@ -1,4 +1,4 @@
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
 export const API_ENDPOINTS = {
   AUTH: {
@@ -9,35 +9,66 @@ export const API_ENDPOINTS = {
   CUSTOMERS: {
     LIST: '/customers',
     CREATE: '/customers',
-    GET: (id: string) => `/customers/${id}`,
+    DETAIL: (id: string) => `/customers/${id}`,
     UPDATE: (id: string) => `/customers/${id}`,
     DELETE: (id: string) => `/customers/${id}`,
+    ACTIVATE: (id: string) => `/customers/${id}/activate`,
+    DEACTIVATE: (id: string) => `/customers/${id}/deactivate`,
+    SUSPEND: (id: string) => `/customers/${id}/suspend`,
+    STATS: '/customers/stats',
+    EXPORT: '/customers/export',
+    BULK_UPDATE_STATUS: '/customers/bulk-update-status',
+    SEARCH: '/customers/search',
+    ASSIGN_METER: (id: string) => `/customers/${id}/assign-meter`,
+  },
+  SUBSCRIPTION_TYPES: {
+    LIST: '/subscription-types',
+    CREATE: '/subscription-types',
+    DETAIL: (id: string) => `/subscription-types/${id}`,
+    UPDATE: (id: string) => `/subscription-types/${id}`,
+    DELETE: (id: string) => `/subscription-types/${id}`,
   },
   INVOICES: {
     LIST: '/invoices',
     CREATE: '/invoices',
-    GET: (id: string) => `/invoices/${id}`,
+    DETAIL: (id: string) => `/invoices/${id}`,
     UPDATE: (id: string) => `/invoices/${id}`,
     DELETE: (id: string) => `/invoices/${id}`,
+    GENERATE_BULK: '/invoices/generate-bulk',
+    SEND: (id: string) => `/invoices/${id}/send`,
+    VOID: (id: string) => `/invoices/${id}/void`,
+    PDF: (id: string) => `/invoices/${id}/pdf`,
   },
   PAYMENTS: {
     LIST: '/payments',
     CREATE: '/payments',
-    GET: (id: string) => `/payments/${id}`,
+    DETAIL: (id: string) => `/payments/${id}`,
+    UPDATE: (id: string) => `/payments/${id}`,
+    DELETE: (id: string) => `/payments/${id}`,
+    RECEIPT: (id: string) => `/payments/${id}/receipt`,
   },
   WATER_USAGE: {
     LIST: '/water-usage',
     CREATE: '/water-usage',
-    GET: (id: string) => `/water-usage/${id}`,
-  },
-  SUBSCRIPTION: {
-    LIST: '/subscriptions',
-    CREATE: '/subscriptions',
-    GET: (id: string) => `/subscriptions/${id}`,
+    DETAIL: (id: string) => `/water-usage/${id}`,
+    UPDATE: (id: string) => `/water-usage/${id}`,
+    DELETE: (id: string) => `/water-usage/${id}`,
+    BULK_IMPORT: '/water-usage/bulk-import',
+    BY_CUSTOMER: (customerId: string) => `/water-usage/customer/${customerId}`,
   },
   WATER_RATES: {
     LIST: '/water-rates',
     CREATE: '/water-rates',
-    GET: (id: string) => `/water-rates/${id}`,
+    DETAIL: (id: string) => `/water-rates/${id}`,
+    UPDATE: (id: string) => `/water-rates/${id}`,
+    DELETE: (id: string) => `/water-rates/${id}`,
+    CURRENT: '/water-rates/current',
+  },
+  REPORTS: {
+    REVENUE: '/reports/revenue',
+    CUSTOMERS: '/reports/customers',
+    USAGE: '/reports/usage',
+    PAYMENTS: '/reports/payments',
+    OUTSTANDING: '/reports/outstanding',
   },
 };

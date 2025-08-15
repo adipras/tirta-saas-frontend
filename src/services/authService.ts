@@ -31,13 +31,27 @@ class AuthService {
 
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
-      const authData: AuthResponse = await apiClient.post(API_ENDPOINTS.AUTH.LOGIN, credentials);
+      const response = await apiClient.post(API_ENDPOINTS.AUTH.LOGIN, credentials);
+      console.log('Login response:', response);
+      
+      // Handle different response formats
+      const authData: AuthResponse = {
+        token: response.token || response.access_token || response.accessToken,
+        refreshToken: response.refreshToken || response.refresh_token || '',
+        user: response.user || {
+          id: response.id || response.userId || '',
+          email: response.email || credentials.email,
+          name: response.name || response.username || 'Admin User',
+          role: response.role || 'admin'
+        }
+      };
       
       this.setTokens(authData.token, authData.refreshToken);
       this.setUser(authData.user);
       
       return authData;
-    } catch {
+    } catch (error) {
+      console.error('Login error:', error);
       throw new Error('Login failed. Please check your credentials.');
     }
   }

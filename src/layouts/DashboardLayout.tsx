@@ -3,6 +3,8 @@ import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 
 const DashboardLayout = () => {
+  console.log('DashboardLayout rendering');
+  
   return (
     <div className="flex h-screen bg-gray-50">
       <Sidebar />
