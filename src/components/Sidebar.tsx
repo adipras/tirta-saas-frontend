@@ -6,6 +6,7 @@ import {
   CreditCardIcon,
   ChartBarIcon,
   CogIcon,
+  BeakerIcon,
 } from '@heroicons/react/24/outline';
 
 const navigation = [
@@ -13,6 +14,7 @@ const navigation = [
   { name: 'Customers', href: '/admin/customers', icon: UserGroupIcon },
   { name: 'Invoices', href: '/admin/invoices', icon: DocumentDuplicateIcon },
   { name: 'Payments', href: '/admin/payments', icon: CreditCardIcon },
+  { name: 'Water Usage', href: '/admin/usage', icon: BeakerIcon },
   { name: 'Reports', href: '/admin/reports', icon: ChartBarIcon },
   { name: 'Settings', href: '/admin/settings', icon: CogIcon },
 ];

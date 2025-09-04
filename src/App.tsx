@@ -11,6 +11,7 @@ import AdminLogin from './pages/auth/AdminLogin';
 import CustomerLogin from './pages/auth/CustomerLogin';
 import PrivateRoute from './components/PrivateRoute';
 import CustomerList from './pages/customers/CustomerList';
+import UsageList from './pages/usage/UsageList';
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
               <Route path="payments" element={<div>Payments Page</div>} />
               <Route path="reports" element={<div>Reports Page</div>} />
               <Route path="settings" element={<div>Settings Page</div>} />
+              <Route path="usage" element={<UsageList />} />
             </Route>
 
             {/* Customer Routes */}
