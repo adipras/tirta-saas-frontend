@@ -267,4 +267,35 @@ The application is currently ready for deployment with:
 
 ---
 
-**Next Phase**: Invoice Management System, Payment Processing, Water Usage Tracking
+---
+
+## ✅ Phase 3: Admin Portal Features - Invoice Management (100% Complete)
+
+### 3.6 Invoice Management System
+- ✅ **Invoice List Page** (`src/pages/invoices/InvoiceList.tsx`)
+  - DataTable component to display invoices with pagination and sorting.
+  - Status indicators for 'Paid', 'Unpaid', and 'Overdue' invoices.
+  - Actions to view invoice details.
+
+- ✅ **Invoice Creation & Editing** (`src/pages/invoices/InvoiceForm.tsx`)
+  - A single form for both creating and editing invoices.
+  - Fetches customer list for selection.
+  - Dynamic line items using `useFieldArray`.
+  - Handles both 'create' and 'edit' modes based on URL.
+
+- ✅ **Invoice Details Page** (`src/pages/invoices/InvoiceDetails.tsx`)
+  - Displays comprehensive details of a single invoice.
+  - Shows customer information, dates, and status.
+  - Includes a table of line items and a total amount.
+  - Provides actions for printing, sending, and editing.
+
+- ✅ **Invoice Service Layer** (`src/services/invoiceService.ts`)
+  - Complete CRUD operations for invoices.
+  - Methods for fetching, creating, updating, and deleting invoices.
+
+- ✅ **Type Definitions** (`src/types/invoice.ts`)
+  - `Invoice`, `InvoiceDetails`, `InvoiceItem`, and `Payment` interfaces.
+
+---
+
+**Next Phase**: Payment Processing, Water Usage Tracking

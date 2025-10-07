@@ -12,6 +12,9 @@ import CustomerLogin from './pages/auth/CustomerLogin';
 import PrivateRoute from './components/PrivateRoute';
 import CustomerList from './pages/customers/CustomerList';
 import UsageList from './pages/usage/UsageList';
+import InvoiceList from './pages/invoices/InvoiceList';
+import InvoiceForm from './pages/invoices/InvoiceForm';
+import InvoiceDetails from './pages/invoices/InvoiceDetails';
 
 function App() {
   return (
@@ -22,7 +25,6 @@ function App() {
             <Route path="/" element={<Navigate to="/admin/login" replace />} />
             
             {/* Admin Routes */}
-            <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin" element={
               <PrivateRoute requiredRole="admin">
                 <DashboardLayout />
@@ -33,7 +35,10 @@ function App() {
               <Route path="customers/new" element={<div>New Customer Form</div>} />
               <Route path="customers/:id" element={<div>Customer Details</div>} />
               <Route path="customers/:id/edit" element={<div>Edit Customer Form</div>} />
-              <Route path="invoices" element={<div>Invoices Page</div>} />
+              <Route path="invoices" element={<InvoiceList />} />
+              <Route path="invoices/new" element={<InvoiceForm />} />
+              <Route path="invoices/:id" element={<InvoiceDetails />} />
+              <Route path="invoices/:id/edit" element={<InvoiceForm />} />
               <Route path="payments" element={<div>Payments Page</div>} />
               <Route path="reports" element={<div>Reports Page</div>} />
               <Route path="settings" element={<div>Settings Page</div>} />

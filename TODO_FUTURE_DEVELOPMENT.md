@@ -50,13 +50,13 @@
   - [ ] Meter reading validation rules
 
 ### 3.5 Invoice Management System
-- [ ] **Invoice Generation & Management**
-  - [ ] Invoice list with advanced filtering
+- [x] **Invoice Generation & Management**
+  - [x] Invoice list with advanced filtering
   - [ ] Automated invoice generation system
   - [ ] Bulk invoice generation for billing periods
-  - [ ] Invoice details view with breakdown
+  - [x] Invoice details view with breakdown
   - [ ] Invoice PDF generation and preview
-  - [ ] Invoice status tracking (Draft, Sent, Paid, Overdue)
+  - [x] Invoice status tracking (Draft, Sent, Paid, Overdue)
   - [ ] Invoice void/cancel functionality
   - [ ] Late fee calculation and application
 
@@ -290,23 +290,27 @@
    - Edit functionality
    - Status management
 
-### Priority 1 (Start with these next)
-1. **Basic Invoice Management**
+4. **Basic Invoice Management** ✅
    - Create invoice list page
-   - Implement invoice generation form
+   - Implement invoice generation form (Create & Edit)
    - Add invoice status tracking
-   - Invoice PDF generation
+   - Invoice details view
 
-2. **Payment Recording System**
+### Priority 1 (Start with these next)
+1. **Payment Recording System**
    - Payment recording interface
    - Payment method selection
    - Payment receipt generation
    - Payment history tracking
 
-3. **Water Usage Entry Forms**
+2. **Water Usage Entry Forms**
    - Meter reading entry form
    - Usage calculation
    - Bulk meter reading import
+
+3. **Advanced Invoice Features**
+    - Invoice PDF generation
+    - Advanced filtering for invoice list
 
 ### Priority 2 (After Priority 1)
 1. **Subscription Type Management**
