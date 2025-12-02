@@ -15,6 +15,7 @@ import UsageList from './pages/usage/UsageList';
 import InvoiceList from './pages/invoices/InvoiceList';
 import InvoiceForm from './pages/invoices/InvoiceForm';
 import InvoiceDetails from './pages/invoices/InvoiceDetails';
+import NotFound from './pages/NotFound';
 
 function App() {
   return (
@@ -23,6 +24,10 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<Navigate to="/admin/login" replace />} />
+
+            {/* Auth Routes */}
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/customer/login" element={<CustomerLogin />} />
             
             {/* Admin Routes */}
             <Route path="/admin" element={
@@ -46,7 +51,6 @@ function App() {
             </Route>
 
             {/* Customer Routes */}
-            <Route path="/customer/login" element={<CustomerLogin />} />
             <Route path="/customer" element={
               <PrivateRoute requiredRole="customer">
                 <CustomerLayout />
@@ -58,6 +62,9 @@ function App() {
               <Route path="payments" element={<div>Customer Payments Page</div>} />
               <Route path="usage" element={<div>Customer Usage Page</div>} />
             </Route>
+
+            {/* Not Found Route */}
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>
       </PersistGate>
