@@ -4,73 +4,73 @@ import {
   PlusIcon, 
   PencilIcon,
   TrashIcon,
-  ArrowUpTrayIcon,
+  CheckCircleIcon,
+  XCircleIcon,
   FunnelIcon,
-  ChartBarIcon,
-  ExclamationTriangleIcon
+  ClockIcon
 } from '@heroicons/react/24/outline';
 import { DataTable } from '../../components/DataTable';
-import { usageService } from '../../services/usageService';
-import { customerService } from '../../services/customerService';
-import type { WaterUsage, WaterUsageFilters } from '../../types/usage';
-import type { Customer } from '../../types/customer';
+import { waterRateService } from '../../services/waterRateService';
+import { subscriptionService } from '../../services/subscriptionService';
+import type { WaterRate, WaterRateFilters } from '../../types/waterRate';
+import type { SubscriptionType } from '../../types/subscription';
 import { useAppDispatch } from '../../hooks/redux';
 import { addNotification } from '../../store/slices/uiSlice';
 
-export default function UsageList() {
+export default function WaterRateList() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   
-  const [waterUsages, setWaterUsages] = useState<WaterUsage[]>([]);
-  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [waterRates, setWaterRates] = useState<WaterRate[]>([]);
+  const [subscriptionTypes, setSubscriptionTypes] = useState<SubscriptionType[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
-  const [filters, setFilters] = useState<WaterUsageFilters>({
-    customerId: undefined,
-    usageMonth: undefined,
+  const [filters, setFilters] = useState<WaterRateFilters>({
+    subscriptionId: undefined,
+    active: undefined,
   });
 
-  const fetchWaterUsages = useCallback(async () => {
+  const fetchWaterRates = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await usageService.getWaterUsages(
+      const response = await waterRateService.getWaterRates(
         currentPage, 
         10, 
         filters
       );
-      setWaterUsages(response.data);
+      setWaterRates(response.data);
       setTotalPages(response.totalPages);
     } catch (error) {
       dispatch(addNotification({
         type: 'error',
-        message: 'Failed to fetch water usages',
+        message: 'Failed to fetch water rates',
       }));
-      console.error('Error fetching water usages:', error);
+      console.error('Error fetching water rates:', error);
     } finally {
       setLoading(false);
     }
   }, [currentPage, filters, dispatch]);
 
-  const fetchCustomers = useCallback(async () => {
+  const fetchSubscriptionTypes = useCallback(async () => {
     try {
-      const response = await customerService.getCustomers(1, 1000, { status: 'active' });
-      setCustomers(response.data);
+      const types = await subscriptionService.getAllSubscriptionTypes();
+      setSubscriptionTypes(types);
     } catch (error) {
-      console.error('Error fetching customers:', error);
+      console.error('Error fetching subscription types:', error);
     }
   }, []);
 
   useEffect(() => {
-    fetchWaterUsages();
-  }, [fetchWaterUsages]);
+    fetchWaterRates();
+  }, [fetchWaterRates]);
 
   useEffect(() => {
-    fetchCustomers();
-  }, [fetchCustomers]);
+    fetchSubscriptionTypes();
+  }, [fetchSubscriptionTypes]);
 
   const handleDelete = async (id: string) => {
     if (deleteConfirm !== id) {
@@ -79,23 +79,44 @@ export default function UsageList() {
     }
 
     try {
-      await usageService.deleteWaterUsage(id);
+      await waterRateService.deleteWaterRate(id);
       dispatch(addNotification({
         type: 'success',
-        message: 'Water usage deleted successfully',
+        message: 'Water rate deleted successfully',
       }));
       setDeleteConfirm(null);
-      fetchWaterUsages();
+      fetchWaterRates();
     } catch (error) {
       dispatch(addNotification({
         type: 'error',
-        message: 'Failed to delete water usage',
+        message: 'Failed to delete water rate',
       }));
-      console.error('Error deleting water usage:', error);
+      console.error('Error deleting water rate:', error);
     }
   };
 
-  const handleFilterChange = (key: keyof WaterUsageFilters, value: string) => {
+  const handleToggleActive = async (id: string, currentStatus: boolean) => {
+    try {
+      if (currentStatus) {
+        await waterRateService.deactivateWaterRate(id);
+      } else {
+        await waterRateService.activateWaterRate(id);
+      }
+      dispatch(addNotification({
+        type: 'success',
+        message: `Water rate ${currentStatus ? 'deactivated' : 'activated'} successfully`,
+      }));
+      fetchWaterRates();
+    } catch (error) {
+      dispatch(addNotification({
+        type: 'error',
+        message: 'Failed to update water rate status',
+      }));
+      console.error('Error toggling water rate:', error);
+    }
+  };
+
+  const handleFilterChange = (key: keyof WaterRateFilters, value: string) => {
     setFilters(prev => ({
       ...prev,
       [key]: value === '' ? undefined : value,
@@ -105,8 +126,8 @@ export default function UsageList() {
 
   const clearFilters = () => {
     setFilters({
-      customerId: undefined,
-      usageMonth: undefined,
+      subscriptionId: undefined,
+      active: undefined,
     });
     setCurrentPage(1);
   };
@@ -119,85 +140,73 @@ export default function UsageList() {
     }).format(amount);
   };
 
-  const formatMonth = (month: string): string => {
-    const [year, monthNum] = month.split('-');
-    const date = new Date(parseInt(year), parseInt(monthNum) - 1);
-    return date.toLocaleDateString('id-ID', {
+  const formatDate = (date: string): string => {
+    return new Date(date).toLocaleDateString('id-ID', {
       year: 'numeric',
       month: 'long',
+      day: 'numeric',
     });
   };
 
   const columns = [
     {
-      key: 'customer',
-      label: 'Customer',
-      render: (row: WaterUsage) => (
-        <div>
-          <div className="font-medium text-gray-900">{row.customer?.name || '-'}</div>
-          <div className="text-sm text-gray-500">{row.customer?.customerId || '-'}</div>
-        </div>
-      ),
+      key: 'subscription',
+      label: 'Subscription Type',
+      render: (row: WaterRate) => row.subscription?.name || '-',
       sortable: true,
     },
     {
-      key: 'usageMonth',
-      label: 'Period',
-      render: (row: WaterUsage) => formatMonth(row.usageMonth),
+      key: 'amount',
+      label: 'Rate per m³',
+      render: (row: WaterRate) => formatCurrency(row.amount),
+      align: 'right' as const,
       sortable: true,
     },
     {
-      key: 'meterNumber',
-      label: 'Meter No.',
-      render: (row: WaterUsage) => row.customer?.meterNumber || '-',
+      key: 'effectiveDate',
+      label: 'Effective Date',
+      render: (row: WaterRate) => formatDate(row.effectiveDate),
+      sortable: true,
     },
     {
-      key: 'meterStart',
-      label: 'Previous',
-      render: (row: WaterUsage) => row.meterStart.toFixed(2),
-      align: 'right' as const,
+      key: 'description',
+      label: 'Description',
+      render: (row: WaterRate) => row.description || '-',
     },
     {
-      key: 'meterEnd',
-      label: 'Current',
-      render: (row: WaterUsage) => row.meterEnd.toFixed(2),
-      align: 'right' as const,
-    },
-    {
-      key: 'usageM3',
-      label: 'Usage (m³)',
-      render: (row: WaterUsage) => (
-        <div className="flex items-center justify-end">
-          <span className="font-medium">{row.usageM3.toFixed(2)}</span>
-          {row.isAnomaly && (
-            <ExclamationTriangleIcon className="w-4 h-4 text-yellow-500 ml-2" title="Anomaly detected" />
+      key: 'active',
+      label: 'Status',
+      render: (row: WaterRate) => (
+        <button
+          onClick={() => handleToggleActive(row.id, row.active)}
+          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+            row.active
+              ? 'bg-green-100 text-green-800 hover:bg-green-200'
+              : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+          }`}
+        >
+          {row.active ? (
+            <>
+              <CheckCircleIcon className="w-4 h-4 mr-1" />
+              Active
+            </>
+          ) : (
+            <>
+              <XCircleIcon className="w-4 h-4 mr-1" />
+              Inactive
+            </>
           )}
-        </div>
+        </button>
       ),
-      align: 'right' as const,
-      sortable: true,
-    },
-    {
-      key: 'amountCalculated',
-      label: 'Amount',
-      render: (row: WaterUsage) => formatCurrency(row.amountCalculated),
-      align: 'right' as const,
-      sortable: true,
+      align: 'center' as const,
     },
     {
       key: 'actions',
       label: 'Actions',
-      render: (row: WaterUsage) => (
+      render: (row: WaterRate) => (
         <div className="flex space-x-2">
           <button
-            onClick={() => navigate(`/admin/usage/${row.customerId}/history`)}
-            className="text-purple-600 hover:text-purple-900"
-            title="View History"
-          >
-            <ChartBarIcon className="w-5 h-5" />
-          </button>
-          <button
-            onClick={() => navigate(`/admin/usage/edit/${row.id}`)}
+            onClick={() => navigate(`/admin/water-rates/edit/${row.id}`)}
             className="text-blue-600 hover:text-blue-900"
             title="Edit"
           >
@@ -220,16 +229,14 @@ export default function UsageList() {
     },
   ];
 
-  const totalUsage = waterUsages.reduce((sum, usage) => sum + usage.usageM3, 0);
-  const totalAmount = waterUsages.reduce((sum, usage) => sum + usage.amountCalculated, 0);
-  const anomaliesCount = waterUsages.filter(u => u.isAnomaly).length;
+  const activeRatesCount = waterRates.filter(r => r.active).length;
 
   return (
     <div className="p-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900">Water Usage</h1>
+        <h1 className="text-2xl font-semibold text-gray-900">Water Rates</h1>
         <p className="mt-2 text-sm text-gray-700">
-          Track and manage water meter readings and usage calculations
+          Manage water rates per cubic meter for different subscription types
         </p>
       </div>
 
@@ -239,15 +246,15 @@ export default function UsageList() {
           <div className="p-5">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <ChartBarIcon className="h-6 w-6 text-blue-400" />
+                <CheckCircleIcon className="h-6 w-6 text-blue-400" />
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
                   <dt className="text-sm font-medium text-gray-500 truncate">
-                    Total Records
+                    Total Rates
                   </dt>
                   <dd className="text-lg font-medium text-gray-900">
-                    {waterUsages.length}
+                    {waterRates.length}
                   </dd>
                 </dl>
               </div>
@@ -259,15 +266,15 @@ export default function UsageList() {
           <div className="p-5">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <ChartBarIcon className="h-6 w-6 text-green-400" />
+                <CheckCircleIcon className="h-6 w-6 text-green-400" />
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
                   <dt className="text-sm font-medium text-gray-500 truncate">
-                    Total Usage
+                    Active Rates
                   </dt>
                   <dd className="text-lg font-medium text-gray-900">
-                    {totalUsage.toFixed(2)} m³
+                    {activeRatesCount}
                   </dd>
                 </dl>
               </div>
@@ -279,35 +286,15 @@ export default function UsageList() {
           <div className="p-5">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <ChartBarIcon className="h-6 w-6 text-purple-400" />
+                <ClockIcon className="h-6 w-6 text-purple-400" />
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
                   <dt className="text-sm font-medium text-gray-500 truncate">
-                    Total Amount
+                    Subscription Types
                   </dt>
                   <dd className="text-lg font-medium text-gray-900">
-                    {formatCurrency(totalAmount)}
-                  </dd>
-                </dl>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white overflow-hidden shadow rounded-lg">
-          <div className="p-5">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <ExclamationTriangleIcon className="h-6 w-6 text-yellow-400" />
-              </div>
-              <div className="ml-5 w-0 flex-1">
-                <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">
-                    Anomalies
-                  </dt>
-                  <dd className="text-lg font-medium text-gray-900">
-                    {anomaliesCount}
+                    {subscriptionTypes.length}
                   </dd>
                 </dl>
               </div>
@@ -331,17 +318,17 @@ export default function UsageList() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Customer
+                  Subscription Type
                 </label>
                 <select
-                  value={filters.customerId || ''}
-                  onChange={(e) => handleFilterChange('customerId', e.target.value)}
+                  value={filters.subscriptionId || ''}
+                  onChange={(e) => handleFilterChange('subscriptionId', e.target.value)}
                   className="block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 >
-                  <option value="">All Customers</option>
-                  {customers.map((customer) => (
-                    <option key={customer.id} value={customer.id}>
-                      {customer.name} ({customer.customerId})
+                  <option value="">All Types</option>
+                  {subscriptionTypes.map((type) => (
+                    <option key={type.id} value={type.id}>
+                      {type.name}
                     </option>
                   ))}
                 </select>
@@ -349,14 +336,17 @@ export default function UsageList() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Period
+                  Status
                 </label>
-                <input
-                  type="month"
-                  value={filters.usageMonth || ''}
-                  onChange={(e) => handleFilterChange('usageMonth', e.target.value)}
+                <select
+                  value={filters.active === undefined ? '' : filters.active.toString()}
+                  onChange={(e) => handleFilterChange('active', e.target.value)}
                   className="block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                />
+                >
+                  <option value="">All Status</option>
+                  <option value="true">Active</option>
+                  <option value="false">Inactive</option>
+                </select>
               </div>
 
               <div className="flex items-end">
@@ -375,18 +365,18 @@ export default function UsageList() {
       {/* Actions */}
       <div className="mb-4 flex justify-between items-center">
         <button
-          onClick={() => navigate('/admin/usage/bulk-import')}
+          onClick={() => navigate('/admin/water-rates/history')}
           className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
         >
-          <ArrowUpTrayIcon className="h-5 w-5 mr-2" />
-          Bulk Import
+          <ClockIcon className="h-5 w-5 mr-2" />
+          View History
         </button>
         <button
-          onClick={() => navigate('/admin/usage/create')}
+          onClick={() => navigate('/admin/water-rates/create')}
           className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
         >
           <PlusIcon className="h-5 w-5 mr-2" />
-          Add Meter Reading
+          Add Water Rate
         </button>
       </div>
 
@@ -394,7 +384,7 @@ export default function UsageList() {
       <div className="bg-white shadow rounded-lg">
         <DataTable
           columns={columns}
-          data={waterUsages}
+          data={waterRates}
           loading={loading}
           currentPage={currentPage}
           totalPages={totalPages}

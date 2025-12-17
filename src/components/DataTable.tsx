@@ -7,7 +7,7 @@ import {
   MagnifyingGlassIcon,
 } from '@heroicons/react/24/outline';
 
-interface Column<T> {
+export interface Column<T> {
   key: keyof T | string;
   label: string;
   sortable?: boolean;

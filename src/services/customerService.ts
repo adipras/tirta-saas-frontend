@@ -11,10 +11,13 @@ import type {
 
 export interface PaginatedResponse<T> {
   data: T[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+    currentPage: number;
+  };
 }
 
 class CustomerService {
@@ -132,4 +135,6 @@ class CustomerService {
   }
 }
 
-export default new CustomerService();
+const customerServiceInstance = new CustomerService();
+export default customerServiceInstance;
+export const customerService = customerServiceInstance;

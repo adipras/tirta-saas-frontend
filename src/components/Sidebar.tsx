@@ -7,11 +7,15 @@ import {
   ChartBarIcon,
   CogIcon,
   BeakerIcon,
+  RectangleStackIcon,
+  CurrencyDollarIcon,
 } from '@heroicons/react/24/outline';
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: HomeIcon },
   { name: 'Customers', href: '/admin/customers', icon: UserGroupIcon },
+  { name: 'Subscription Types', href: '/admin/subscriptions', icon: RectangleStackIcon },
+  { name: 'Water Rates', href: '/admin/water-rates', icon: CurrencyDollarIcon },
   { name: 'Invoices', href: '/admin/invoices', icon: DocumentDuplicateIcon },
   { name: 'Payments', href: '/admin/payments', icon: CreditCardIcon },
   { name: 'Water Usage', href: '/admin/usage', icon: BeakerIcon },

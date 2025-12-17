@@ -12,9 +12,25 @@ import CustomerLogin from './pages/auth/CustomerLogin';
 import PrivateRoute from './components/PrivateRoute';
 import CustomerList from './pages/customers/CustomerList';
 import UsageList from './pages/usage/UsageList';
+import MeterReadingForm from './pages/usage/MeterReadingForm';
+import UsageHistory from './pages/usage/UsageHistory';
 import InvoiceList from './pages/invoices/InvoiceList';
 import InvoiceForm from './pages/invoices/InvoiceForm';
 import InvoiceDetails from './pages/invoices/InvoiceDetails';
+import SubscriptionTypeList from './pages/subscriptions/SubscriptionTypeList';
+import SubscriptionTypeForm from './pages/subscriptions/SubscriptionTypeForm';
+import WaterRateList from './pages/water-rates/WaterRateList';
+import WaterRateForm from './pages/water-rates/WaterRateForm';
+import RateHistory from './pages/water-rates/RateHistory';
+import { PaymentList, PaymentForm, PaymentReceipt } from './pages/payments';
+import { 
+  ReportsDashboard, 
+  RevenueReport, 
+  CustomerAnalytics,
+  PaymentReport,
+  UsageReport,
+  OutstandingReport
+} from './pages/reports';
 import NotFound from './pages/NotFound';
 
 function App() {
@@ -40,14 +56,32 @@ function App() {
               <Route path="customers/new" element={<div>New Customer Form</div>} />
               <Route path="customers/:id" element={<div>Customer Details</div>} />
               <Route path="customers/:id/edit" element={<div>Edit Customer Form</div>} />
+              <Route path="subscriptions" element={<SubscriptionTypeList />} />
+              <Route path="subscriptions/create" element={<SubscriptionTypeForm />} />
+              <Route path="subscriptions/edit/:id" element={<SubscriptionTypeForm />} />
+              <Route path="water-rates" element={<WaterRateList />} />
+              <Route path="water-rates/create" element={<WaterRateForm />} />
+              <Route path="water-rates/edit/:id" element={<WaterRateForm />} />
+              <Route path="water-rates/history" element={<RateHistory />} />
               <Route path="invoices" element={<InvoiceList />} />
               <Route path="invoices/new" element={<InvoiceForm />} />
               <Route path="invoices/:id" element={<InvoiceDetails />} />
               <Route path="invoices/:id/edit" element={<InvoiceForm />} />
-              <Route path="payments" element={<div>Payments Page</div>} />
-              <Route path="reports" element={<div>Reports Page</div>} />
+              <Route path="payments" element={<PaymentList />} />
+              <Route path="payments/new" element={<PaymentForm />} />
+              <Route path="payments/:id/edit" element={<PaymentForm />} />
+              <Route path="payments/:id/receipt" element={<PaymentReceipt />} />
+              <Route path="reports" element={<ReportsDashboard />} />
+              <Route path="reports/revenue" element={<RevenueReport />} />
+              <Route path="reports/customers" element={<CustomerAnalytics />} />
+              <Route path="reports/payments" element={<PaymentReport />} />
+              <Route path="reports/usage" element={<UsageReport />} />
+              <Route path="reports/outstanding" element={<OutstandingReport />} />
               <Route path="settings" element={<div>Settings Page</div>} />
               <Route path="usage" element={<UsageList />} />
+              <Route path="usage/create" element={<MeterReadingForm />} />
+              <Route path="usage/edit/:id" element={<MeterReadingForm />} />
+              <Route path="usage/:customerId/history" element={<UsageHistory />} />
             </Route>
 
             {/* Customer Routes */}

@@ -42,10 +42,15 @@ export const API_ENDPOINTS = {
   PAYMENTS: {
     LIST: '/payments',
     CREATE: '/payments',
-    DETAIL: (id: string) => `/payments/${id}`,
-    UPDATE: (id: string) => `/payments/${id}`,
-    DELETE: (id: string) => `/payments/${id}`,
-    RECEIPT: (id: string) => `/payments/${id}/receipt`,
+    GET: '/payments/:id',
+    UPDATE: '/payments/:id',
+    DELETE: '/payments/:id',
+    BY_INVOICE: '/payments/invoice/:invoiceId',
+    OUTSTANDING_INVOICES: '/invoices/outstanding',
+    VOID: '/payments/:id/void',
+    GENERATE_RECEIPT: '/payments/:id/receipt',
+    GET_RECEIPT: '/payments/:id/receipt',
+    EXPORT: '/payments/export',
   },
   WATER_USAGE: {
     LIST: '/water-usage',
@@ -70,5 +75,6 @@ export const API_ENDPOINTS = {
     USAGE: '/reports/usage',
     PAYMENTS: '/reports/payments',
     OUTSTANDING: '/reports/outstanding',
+    EXPORT: '/reports/export',
   },
 };
