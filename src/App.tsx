@@ -31,6 +31,10 @@ import {
   UsageReport,
   OutstandingReport
 } from './pages/reports';
+import { CustomerProfile, CustomerProfileEdit, ChangePassword } from './pages/customer-profile';
+import { CustomerInvoiceList, CustomerInvoiceDetail } from './pages/customer-invoices';
+import { CustomerPaymentForm, PaymentSuccess } from './pages/customer-payments';
+import { CustomerUsageMonitor } from './pages/customer-usage';
 import NotFound from './pages/NotFound';
 
 function App() {
@@ -91,10 +95,15 @@ function App() {
               </PrivateRoute>
             }>
               <Route index element={<CustomerDashboard />} />
-              <Route path="profile" element={<div>Customer Profile Page</div>} />
-              <Route path="invoices" element={<div>Customer Invoices Page</div>} />
-              <Route path="payments" element={<div>Customer Payments Page</div>} />
-              <Route path="usage" element={<div>Customer Usage Page</div>} />
+              <Route path="dashboard" element={<CustomerDashboard />} />
+              <Route path="profile" element={<CustomerProfile />} />
+              <Route path="profile/edit" element={<CustomerProfileEdit />} />
+              <Route path="profile/change-password" element={<ChangePassword />} />
+              <Route path="invoices" element={<CustomerInvoiceList />} />
+              <Route path="invoices/:id" element={<CustomerInvoiceDetail />} />
+              <Route path="payments/new" element={<CustomerPaymentForm />} />
+              <Route path="payments/success" element={<PaymentSuccess />} />
+              <Route path="usage" element={<CustomerUsageMonitor />} />
             </Route>
 
             {/* Not Found Route */}

@@ -111,6 +111,28 @@ class PaymentService {
     });
     return response.data;
   }
+
+  // Customer-specific payment methods
+  async createCustomerPayment(data: {
+    invoiceId: string;
+    amount: number;
+    paymentMethod: string;
+    referenceNumber?: string;
+    notes?: string;
+  }): Promise<Payment> {
+    const response = await apiClient.post<Payment>('/customer/payments', data);
+    return response;
+  }
+
+  async getCustomerPayments(): Promise<Payment[]> {
+    const response = await apiClient.get<Payment[]>('/customer/payments');
+    return response;
+  }
+
+  async getCustomerPaymentReceipt(paymentId: number): Promise<PaymentReceipt> {
+    const response = await apiClient.get<PaymentReceipt>(`/customer/payments/${paymentId}/receipt`);
+    return response;
+  }
 }
 
 export const paymentService = new PaymentService();

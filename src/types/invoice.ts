@@ -5,11 +5,29 @@ export interface Invoice {
   customerName: string;
   periodStartDate: string;
   periodEndDate: string;
+  billingPeriod: string;
   usage: number;
   amount: number;
-  status: 'paid' | 'unpaid' | 'overdue';
+  totalAmount: number;
+  amountPaid: number;
+  amountDue: number;
+  status: 'paid' | 'unpaid' | 'overdue' | 'partial';
+  issueDate: string;
   dueDate: string;
   createdAt: string;
+  customer?: {
+    customerId: string;
+    name: string;
+    email: string;
+    phone: string;
+    address: string;
+  };
+  items?: InvoiceItem[];
+  payments?: PaymentHistory[];
+  subtotal?: number;
+  taxAmount?: number;
+  taxPercentage?: number;
+  notes?: string;
 }
 
 export interface InvoiceDetails extends Invoice {
@@ -18,11 +36,21 @@ export interface InvoiceDetails extends Invoice {
 }
 
 export interface InvoiceItem {
-  id: string;
+  id?: string;
   description: string;
-  quantity: number;
+  quantity: number | string;
   unitPrice: number;
-  total: number;
+  amount: number;
+  total?: number;
+}
+
+export interface PaymentHistory {
+  id?: string;
+  paymentDate: string;
+  amount: number;
+  paymentMethod: string;
+  method?: string;
+  referenceNumber?: string;
 }
 
 export interface Payment {

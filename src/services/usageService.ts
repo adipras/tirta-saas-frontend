@@ -50,7 +50,7 @@ class UsageService {
     return response.data;
   }
 
-  async getCustomerUsageHistory(customerId: string): Promise<UsageHistory[]> {
+  async getCustomerUsageHistoryById(customerId: string): Promise<UsageHistory[]> {
     const response = await apiClient.get(
       API_ENDPOINTS.WATER_USAGE.BY_CUSTOMER(customerId)
     );
@@ -120,6 +120,29 @@ class UsageService {
   // Legacy support
   getUsageList() {
     return this.getWaterUsages();
+  }
+
+  // Customer-specific usage methods
+  async getCustomerUsageHistory(period: '6months' | '12months' | 'all' = '6months'): Promise<WaterUsage[]> {
+    const params: Record<string, string> = { period };
+    const response = await apiClient.get('/customer/usage/history', { params });
+    return response.data;
+  }
+
+  async getCurrentUsage(): Promise<WaterUsage> {
+    const response = await apiClient.get('/customer/usage/current');
+    return response.data;
+  }
+
+  async getUsageStats(): Promise<{
+    currentMonth: number;
+    lastMonth: number;
+    average: number;
+    total: number;
+    trend: string;
+  }> {
+    const response = await apiClient.get('/customer/usage/stats');
+    return response.data;
   }
 }
 

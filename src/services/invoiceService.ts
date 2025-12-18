@@ -60,6 +60,29 @@ class InvoiceService {
     });
     return response;
   }
+
+  // Customer-specific methods
+  async getCustomerInvoices(): Promise<Invoice[]> {
+    const response = await apiClient.get<Invoice[]>('/customer/invoices');
+    return response;
+  }
+
+  async downloadInvoicePDF(invoiceId: string): Promise<void> {
+    const response = await apiClient.get(`/customer/invoices/${invoiceId}/pdf`, {
+      responseType: 'blob',
+    });
+    
+    // Create download link
+    const url = window.URL.createObjectURL(new Blob([response]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `invoice-${invoiceId}.pdf`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  }
 }
 
-export default new InvoiceService();
+const invoiceServiceInstance = new InvoiceService();
+export const invoiceService = invoiceServiceInstance;
+export default invoiceServiceInstance;
