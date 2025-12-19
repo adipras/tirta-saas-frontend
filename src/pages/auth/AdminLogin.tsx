@@ -37,10 +37,17 @@ const AdminLogin = () => {
     // Prevent double submission
     if (isLoading) return;
     
+    console.log('=== Login Form Submit ===');
+    console.log('Login data:', data);
+    
     try {
-      await dispatch(loginAsync(data)).unwrap();
+      const result = await dispatch(loginAsync(data)).unwrap();
+      console.log('✅ Login Success!');
+      console.log('Login result:', result);
+      console.log('Navigating to /admin...');
       navigate('/admin');
     } catch (error) {
+      console.error('❌ Login Failed:', error);
       // Error is handled by Redux slice
     }
   };

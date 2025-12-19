@@ -24,8 +24,10 @@ const navigation = [
 ];
 
 const Sidebar = () => {
+  console.log('=== Sidebar Rendering ===');
+  
   return (
-    <div className="hidden md:flex md:w-64 md:flex-col">
+    <div className="flex w-64 flex-col" style={{ backgroundColor: 'lightgray' }}>
       <div className="flex flex-col flex-grow pt-5 bg-white border-r border-gray-200 overflow-y-auto">
         <div className="flex items-center flex-shrink-0 px-4">
           <h1 className="text-xl font-semibold text-gray-900">Tirta SaaS</h1>

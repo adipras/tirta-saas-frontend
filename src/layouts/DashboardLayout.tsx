@@ -3,10 +3,11 @@ import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 
 const DashboardLayout = () => {
-  console.log('DashboardLayout rendering');
+  console.log('=== DashboardLayout Rendering ===');
+  console.log('DashboardLayout is rendering the layout...');
   
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-50" style={{ border: '5px solid blue' }}>
       <Sidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header />

@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './store';
+import { ToastProvider, ErrorBoundary, PrivateRoute } from './components';
 
 import DashboardLayout from './layouts/DashboardLayout';
 import CustomerLayout from './layouts/CustomerLayout';
@@ -9,7 +10,6 @@ import Dashboard from './pages/Dashboard';
 import CustomerDashboard from './pages/CustomerDashboard';
 import AdminLogin from './pages/auth/AdminLogin';
 import CustomerLogin from './pages/auth/CustomerLogin';
-import PrivateRoute from './components/PrivateRoute';
 import CustomerList from './pages/customers/CustomerList';
 import UsageList from './pages/usage/UsageList';
 import MeterReadingForm from './pages/usage/MeterReadingForm';
@@ -36,26 +36,57 @@ import { CustomerInvoiceList, CustomerInvoiceDetail } from './pages/customer-inv
 import { CustomerPaymentForm, PaymentSuccess } from './pages/customer-payments';
 import { CustomerUsageMonitor } from './pages/customer-usage';
 import NotFound from './pages/NotFound';
+import TestPage from './pages/TestPage';
 
 function App() {
+  console.log('=== App Component Rendering ===');
+  
   return (
     <Provider store={store}>
       <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
-        <Router>
-          <Routes>
+        <ErrorBoundary>
+          <ToastProvider>
+            <Router>
+            <Routes>
             <Route path="/" element={<Navigate to="/admin/login" replace />} />
+            
+            {/* Debug route */}
+            <Route path="/debug" element={
+              <div style={{ padding: '50px', backgroundColor: 'yellow' }}>
+                <h1 style={{ fontSize: '30px', marginBottom: '20px' }}>DEBUG PAGE</h1>
+                <p>If you see this, routing works!</p>
+                <pre>{JSON.stringify({
+                  path: window.location.pathname,
+                  hash: window.location.hash,
+                  search: window.location.search
+                }, null, 2)}</pre>
+              </div>
+            } />
 
             {/* Auth Routes */}
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/customer/login" element={<CustomerLogin />} />
             
+            {/* Test route - outside auth to verify routing works */}
+            <Route path="/test-simple" element={
+              <div style={{ backgroundColor: 'red', color: 'white', padding: '50px', fontSize: '30px', minHeight: '100vh' }}>
+                <h1>SIMPLE TEST - NO AUTH</h1>
+                <p>If you see this, React Router works!</p>
+              </div>
+            } />
+
             {/* Admin Routes */}
             <Route path="/admin" element={
               <PrivateRoute requiredRole="admin">
                 <DashboardLayout />
               </PrivateRoute>
             }>
-              <Route index element={<Dashboard />} />
+              <Route index element={
+                <ErrorBoundary>
+                  <Dashboard />
+                </ErrorBoundary>
+              } />
+              <Route path="test" element={<TestPage />} />
               <Route path="customers" element={<CustomerList />} />
               <Route path="customers/new" element={<div>New Customer Form</div>} />
               <Route path="customers/:id" element={<div>Customer Details</div>} />
@@ -109,7 +140,9 @@ function App() {
             {/* Not Found Route */}
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </Router>
+            </Router>
+          </ToastProvider>
+        </ErrorBoundary>
       </PersistGate>
     </Provider>
   );

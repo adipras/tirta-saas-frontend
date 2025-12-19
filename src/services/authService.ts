@@ -21,7 +21,8 @@ export interface User {
   id: string;
   email: string;
   name: string;
-  role: 'admin' | 'customer';
+  role: 'admin' | 'customer' | 'platform_owner' | 'tenant_admin' | 'meter_reader' | 'finance' | 'service';
+  tenant_id?: string;
 }
 
 class AuthService {
@@ -42,7 +43,8 @@ class AuthService {
           id: response.id || response.userId || '',
           email: response.email || credentials.email,
           name: response.name || response.username || 'Admin User',
-          role: response.role || 'admin'
+          role: response.role || 'admin',
+          tenant_id: response.tenant_id || response.tenantId
         }
       };
       

@@ -3,8 +3,10 @@ import { useAppSelector, useAppDispatch } from '../hooks/redux';
 import { logoutAsync } from '../store/slices/authSlice';
 
 const Header = () => {
+  console.log('=== Header Rendering ===');
   const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
+  console.log('Header user:', user);
 
   const handleLogout = () => {
     dispatch(logoutAsync());

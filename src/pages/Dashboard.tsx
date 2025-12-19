@@ -37,8 +37,11 @@ const stats = [
 ];
 
 const Dashboard = () => {
+  console.log('=== Dashboard Component Rendering ===');
+  console.log('Dashboard content should appear now');
+  
   return (
-    <div>
+    <div style={{ border: '3px solid green', padding: '20px', backgroundColor: 'white' }}>
       <h1 className="text-2xl font-semibold text-gray-900 mb-6">Dashboard Overview</h1>
       
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">

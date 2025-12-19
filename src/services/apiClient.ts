@@ -40,8 +40,8 @@ class ApiClient {
 
         // Add tenant context if available
         const user = authService.getUser();
-        if (user) {
-          config.headers['X-Tenant-ID'] = user.id;
+        if (user && user.tenant_id) {
+          config.headers['X-Tenant-ID'] = user.tenant_id;
         }
 
         return config;
